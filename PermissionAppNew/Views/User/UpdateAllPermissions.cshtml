@@ -1,0 +1,196 @@
+@model LeaveDay
+
+@if (Model.Admins != null)
+{
+    <form asp-action="UpdateAllPermissions" method="post">
+        <input type="hidden" asp-for="Id">
+        <input type="hidden" asp-for="AdminId">,
+        <input type="hidden" asp-for="@Model.Admins.Id">
+        <input type="hidden" asp-for="@Model.Admins.Password">
+
+
+
+
+        <div class="form-group">
+            <label asp-for="@Model.Admins.Name">İsim</label>
+            <input asp-for="@Model.Admins.Name" class="form-control" />
+            <span asp-validation-for="@Model.Admins.Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Admins.SurName">Soyisim</label>
+            <input asp-for="@Model.Admins.SurName" class="form-control" />
+            <span asp-validation-for="@Model.Admins.SurName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Admins.NickName">Kullanıcı Adı</label>
+            <input asp-for="@Model.Admins.NickName" class="form-control" />
+            <span asp-validation-for="@Model.Admins.NickName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Admins.Email">E-posta</label>
+            <input asp-for="@Model.Admins.Email" class="form-control" />
+            <span asp-validation-for="@Model.Admins.Email" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="StartDate">İzin Başlangıç</label>
+            <input type="date" asp-for="StartDate" class="form-control" />
+        </div>
+        <div>
+            <label asp-for="EndDate">İzin Bitiş </label>
+            <input type="date" asp-for="EndDate" class="form-control" />
+        </div>
+        <div>
+            <label asp-for="LeaveType">İzin Türü</label>
+            <select asp-for="LeaveType" class="form-control">
+                <option>Evden Çalışma</option>
+                <option>Ofisten Çalışma</option>
+                <option>Hastalık İzni</option>
+            </select>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success mt-3">Güncelle</button>
+        </div>
+    </form>
+}
+@if (Model.Interns != null)
+{
+    <form asp-action="UpdateAllPermissions" method="post">
+        <input type="hidden" asp-for="Id">
+        <input type="hidden" asp-for="InternId">,
+        <input type="hidden" asp-for="@Model.Interns.Id">
+        <input type="hidden" asp-for="@Model.Interns.stajBaslama">
+
+        <input type="hidden" asp-for="@Model.Interns.stajBitis">
+        <input type="hidden" asp-for="@Model.Interns.Password">
+        <input type="hidden" asp-for="@Model.Interns.Age">
+
+        <input type="hidden" asp-for="@Model.Interns.Phone">
+        <input type="hidden" asp-for="IzinAlimTarihi">
+
+
+
+
+
+
+
+
+        <div class="form-group">
+            <label asp-for="@Model.Interns.Name">İsim</label>
+            <input asp-for="@Model.Interns.Name" class="form-control" />
+            <span asp-validation-for="@Model.Interns.Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Interns.SurName">Soyisim</label>
+            <input asp-for="@Model.Interns.SurName" class="form-control" />
+            <span asp-validation-for="@Model.Interns.SurName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Interns.NickName">Kullanıcı Adı</label>
+            <input asp-for="@Model.Interns.NickName" class="form-control" />
+            <span asp-validation-for="@Model.Interns.NickName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Interns.Email">E-posta</label>
+            <input asp-for="@Model.Interns.Email" class="form-control" />
+            <span asp-validation-for="@Model.Interns.Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Interns.Okul">Okul Adı</label>
+            <input asp-for="@Model.Interns.Okul" class="form-control" />
+            <span asp-validation-for="@Model.Interns.Okul" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Interns.Position">Departman</label>
+            <input asp-for="@Model.Interns.Position" class="form-control" />
+            <span asp-validation-for="@Model.Interns.Position" class="text-danger"></span>
+        </div>
+
+        <div>
+            <label asp-for="StartDate">İzin Başlangıç</label>
+            <input type="date" asp-for="StartDate" class="form-control" />
+        </div>
+        <div>
+            <label asp-for="EndDate">İzin Bitiş </label>
+            <input type="date" asp-for="EndDate" class="form-control" />
+        </div>
+        <div>
+            <label asp-for="LeaveType">İzin Türü</label>
+            <select asp-for="LeaveType" class="form-control">
+                <option>Evden Çalışma</option>
+                <option>Ofisten Çalışma</option>
+                <option>Hastalık İzni</option>
+            </select>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success mt-3">Güncelle</button>
+        </div>
+    </form>
+}
+@if (Model.Users != null)
+{
+    <form asp-action="UpdateAllPermissions" method="post">
+        <input type="hidden" asp-for="Id">
+        <input type="hidden" asp-for="UserId">,
+        <input type="hidden" asp-for="@Model.Users.Id">
+
+        <input type="hidden" asp-for="@Model.Users.Password">
+        <input type="hidden" asp-for="@Model.Users.Age">
+
+        <input type="hidden" asp-for="@Model.Users.Phone">
+        <input type="hidden" asp-for="IzinAlimTarihi">
+
+
+
+
+
+
+
+
+        <div class="form-group">
+            <label asp-for="@Model.Users.Name">İsim</label>
+            <input asp-for="@Model.Users.Name" class="form-control" />
+            <span asp-validation-for="@Model.Users.Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Users.SurName">Soyisim</label>
+            <input asp-for="@Model.Users.SurName" class="form-control" />
+            <span asp-validation-for="@Model.Users.SurName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Users.NickName">Kullanıcı Adı</label>
+            <input asp-for="@Model.Users.NickName" class="form-control" />
+            <span asp-validation-for="@Model.Users.NickName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Users.Email">E-posta</label>
+            <input asp-for="@Model.Users.Email" class="form-control" />
+            <span asp-validation-for="@Model.Users.Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="@Model.Users.Position">Departman</label>
+            <input asp-for="@Model.Users.Position" class="form-control" />
+            <span asp-validation-for="@Model.Users.Position" class="text-danger"></span>
+        </div>
+
+        <div>
+            <label asp-for="StartDate">İzin Başlangıç</label>
+            <input type="date" asp-for="StartDate" class="form-control" />
+        </div>
+        <div>
+            <label asp-for="EndDate">İzin Bitiş </label>
+            <input type="date" asp-for="EndDate" class="form-control" />
+        </div>
+        <div>
+            <label asp-for="LeaveType">İzin Türü</label>
+            <select asp-for="LeaveType" class="form-control">
+                <option>Evden Çalışma</option>
+                <option>Ofisten Çalışma</option>
+                <option>Hastalık İzni</option>
+            </select>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success mt-3">Güncelle</button>
+        </div>
+    </form>
+}

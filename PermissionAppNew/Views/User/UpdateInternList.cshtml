@@ -1,0 +1,61 @@
+@model Intern
+<form asp-action="UpdateInternList" method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Password" />
+
+
+
+
+
+
+
+
+    <div>
+        <label asp-for="NickName">Kullanıcı Adı</label>
+        <input type="text" asp-for="NickName" class="form-control" />
+    </div>
+    <div>
+        <label asp-for="Name">Ad</label>
+        <input type="text" asp-for="Name" class="form-control" />
+    </div>
+    <div>
+        <label asp-for="SurName">Soyad</label>
+        <input type="text" asp-for="SurName" class="form-control" />
+    </div>
+    <div>
+        <label asp-for="Age">Yaş</label>
+        <input asp-for="Age" class="form-control">
+
+    </div>
+
+    <div>
+        <label asp-for="Phone">Telefon</label>
+        <input type="text" asp-for="Phone" class="form-control" />
+    </div>
+    <div>
+        <label asp-for="Okul">Okul</label>
+        <input type="text" asp-for="Okul" class="form-control" />
+    </div>
+    <div>
+        <label asp-for="Email">E-Posta</label>
+        <input asp-for="Email" class="form-control">
+
+    </div>
+    <div>
+        <label asp-for="Position">Departman</label>
+        <input asp-for="Position" class="form-control">
+
+    </div>
+    <div>
+        <label asp-for="stajBaslama">Staj Başlama</label>
+        <input asp-for="stajBaslama" class="form-control">
+
+    </div>
+    <div>
+        <label asp-for="stajBitis">Staj Bitiş </label>
+        <input asp-for="stajBitis" class="form-control">
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Güncelle</button>
+</form>

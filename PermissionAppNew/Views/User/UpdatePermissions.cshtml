@@ -1,0 +1,33 @@
+@model LeaveDay
+<form asp-action="UpdatePermissions" method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="AdminId" />
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="InternId" />
+    <input type="hidden" asp-for="AdminId" />
+    <input type="hidden" asp-for="IzinAlimTarihi" />
+
+
+
+
+
+
+
+    <div>
+        <label asp-for="StartDate">Başlangıç Tarihi</label>
+        <input type="date" asp-for="StartDate" class="form-control" />
+    </div>
+    <div>
+        <label asp-for="EndDate">Bitiş Tarihi</label>
+        <input type="date" asp-for="EndDate" class="form-control" />
+    </div>
+    <div>
+        <label asp-for="LeaveType">İzin Türü</label>
+        <select asp-for="LeaveType" class="form-control">
+            <option>Evden Çalışma</option>
+            <option>Ofisten Çalışma</option>
+            <option>Hastalık İzni</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Güncelle</button>
+</form>

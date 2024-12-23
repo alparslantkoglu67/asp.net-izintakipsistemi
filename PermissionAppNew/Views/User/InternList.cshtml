@@ -1,0 +1,65 @@
+@model List<Intern>
+
+@{
+    ViewData["Title"] = "Stajyer Listesi";
+}
+
+<h2>Stajyer Listesi</h2>
+
+<table class="table table-hover text-center">
+    <thead>
+        <tr>
+            <th>Adı Soyadı</th>
+            <th>Kullanıcı Adı</th>
+            <th>E-posta</th>
+            <th>Yaş</th>
+            <th>Okul</th>
+            <th>Departman</th>
+            <th>Telefon</th>
+            <th>Staj Başlama Tarihi</th>
+            <th>Staj Bitiş Tarihi</th>
+            <th></th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var intern in Model)
+        {
+            <tr>
+                <td>@intern.AdSoyad</td>
+                <td>@intern.NickName</td>
+
+                <td>@intern.Email</td>
+                <td>@intern.Age</td>
+                <td>@intern.Okul</td>
+                <td>@intern.Position</td>
+                <td>@intern.Phone</td>
+                <td>@intern.stajBaslama.ToString("d")</td>
+                <td>@intern.stajBitis.ToString("d")</td>
+                <td>
+                    <form asp-action="UpdateInternList" asp-controller="User" method="get">
+                        <input type="hidden" name="id" value="@intern.Id" />
+                        <input type="hidden" name="Name" value="@intern.Name" />
+
+                        <input type="hidden" name="SurName" value="@intern.SurName" />
+                        <button class="btn btn-success" type="submit">Düzenle</button>
+                    </form>
+                </td>
+                <td>
+
+                    <form asp-action="DeleteInternList" asp-controller="User" method="post">
+                        <input type="hidden" name="id" value="@intern.Id" />
+                        <input type="hidden" name="Name" value="@intern.Name" />
+
+                        <input type="hidden" name="SurName" value="@intern.SurName" />
+                        <button class="btn btn-danger" type="submit">Sil</button>
+                    </form>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="CreateIntern">Yeni Stajyer Ekle</a>

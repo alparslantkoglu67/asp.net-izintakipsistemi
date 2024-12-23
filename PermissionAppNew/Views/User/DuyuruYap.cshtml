@@ -1,0 +1,45 @@
+@model Duyuru
+
+<h2 class="text-center">Duyuru Ekranı</h2>
+
+<div class="container-fluid" style="width: 30%;">
+
+    <head>
+        <style>
+            .full-height {
+                height: 100px;
+                /* Tüm ekran yüksekliği */
+                width: 130%;
+                /* Tüm genişlik */
+                display: flex;
+                flex-direction: column;
+                /* Etiket ve input'un düzeni */
+            }
+
+            textarea.full-height {
+                flex-grow: 1;
+                /* Yüksekliği kalan alanı dolduracak şekilde ayarla */
+                resize: none;
+                /* Kullanıcının boyutlandırma yapmasını kapat */
+            }
+        </style>
+    </head>
+
+    <form asp-controller="User" asp-action="DuyuruYap" method="post">
+        <div class="form-group">
+            <label asp-for="Konu">Konu Başlığı</label>
+            <input asp-for="Konu" class="form-control" />
+            <span asp-validation-for="Konu" class="text-danger"></span>
+        </div>
+        <div class="form-group" style="margin-top: 1rem;">
+            <label asp-for="Icerik">İçerik</label>
+            <textarea asp-for="Icerik" class="form-control full-height"></textarea>
+            <span asp-validation-for="Icerik" class="text-danger"></span>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary mt-3">Duyuru Yap</button>
+        </div>
+
+    </form>
+</div>

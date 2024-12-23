@@ -1,0 +1,165 @@
+@model List<LeaveDay>
+
+@{
+    ViewData["Title"] = "Tüm İzinler";
+    string durum = "warning";
+}
+
+<h2>Tüm İzinler</h2>
+
+
+@if (Model.Count == 0)
+{
+    <p>Henüz izin talebiniz bulunmamaktadır.</p>
+}
+else
+{
+    
+            <table class="table  table-hover text-center " >
+        <thead>
+            <tr>
+                <th style="width: 8%;">Id</th>
+                <th style="width: 9%;">Kullanıcı Adı</th>
+                <th >Adı Soyadı</th>
+                <th >E-mail</th>
+                <th >Telefon</th>
+                <th > İzin Başlangıç </th>
+                <th>İzin Bitiş </th>
+                <th >İzin Türü</th>
+                <th >İzin Talep</th>
+                <th style="width: 12%;">İzin Onay Durumu </th>
+                
+
+
+            </tr>
+        </thead>
+        <tbody >
+    @foreach (var leave in Model)
+    {
+                <tr>
+
+            @if (@leave.Users != null)
+            {
+                        <td>Çalışan ID:@leave.Users.Id</td>
+                        <td>@leave.Users.NickName</td>
+                        <td>@leave.Users.AdSoyad</td>
+                        <td>@leave.Users.Email</td>
+                        
+                        <td>@leave.Users.Phone</td>
+                        
+                        
+
+
+
+
+            }
+            @if (@leave.Admins != null)
+            {
+                        <td>Admin ID: @leave.Admins.Id</td>
+                        <td>@leave.Admins.NickName</td>
+                        <td>@leave.Admins.AdSoyad</td>
+                        <td>@leave.Admins.Email</td>
+                        
+                        <td>-</td>
+                        
+                        
+
+                        
+
+
+            }
+            @if (@leave.Interns != null)
+            {
+                        <td>Stajyer ID: @leave.Interns.Id</td>
+                        <td>@leave.Interns.NickName</td>
+                        <td>@leave.Interns.AdSoyad</td>
+                        <td>@leave.Interns.Email</td>
+                        
+                        
+                        <td>@leave.Interns.Phone</td>
+                        
+
+
+
+            }
+
+
+                    <td>@leave.StartDate.ToString("dd/MM/yyyy")</td>
+                    <td>@leave.EndDate.ToString("dd/MM/yyyy")</td>
+                    <td>@leave.LeaveType</td>
+                   
+                    <td>@leave.IzinAlimTarihi.ToString("dd/MM/yyyy")</td>
+                        <td >
+
+                            @if(leave.IzinOnayDurumu=="Onaylandı")
+                            {
+                                
+                            durum="success";
+                            }
+                            @if(leave.IzinOnayDurumu=="Reddedildi"){
+                            durum="danger";
+                            }
+                            @{
+                              <strong class="text-@durum">@leave.IzinOnayDurumu</strong>  
+                                @if(leave.IzinOnayDurumu=="Beklemede")
+                                {
+                                <svg  style="margin-right: -1.5rem;"height="20px" width="20px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"> .st0{fill:#000000;} </style> <g> <path class="st0" d="M329.364,237.908l42.558-39.905c25.236-23.661,39.552-56.701,39.552-91.292V49.156 c0.009-13.514-5.53-25.918-14.402-34.754C388.235,5.529,375.833-0.009,362.318,0H149.681c-13.514-0.009-25.926,5.529-34.763,14.401 c-8.871,8.837-14.41,21.24-14.392,34.754v57.554c0,34.591,14.315,67.632,39.552,91.292l42.55,39.888 c2.342,2.205,3.678,5.271,3.678,8.492v19.234c0,3.221-1.336,6.279-3.669,8.476l-42.558,39.905 c-25.237,23.652-39.552,56.701-39.552,91.292v57.554c-0.018,13.515,5.522,25.918,14.392,34.755 c8.838,8.871,21.249,14.41,34.763,14.401h212.636c13.515,0.009,25.918-5.53,34.755-14.401c8.871-8.838,14.41-21.24,14.402-34.755 V405.29c0-34.591-14.316-67.64-39.552-91.292l-42.55-39.897c-2.352-2.205-3.678-5.263-3.678-8.484v-19.234 C325.694,243.162,327.021,240.096,329.364,237.908z M373.946,462.844c-0.009,3.273-1.274,6.056-3.411,8.218 c-2.162,2.136-4.944,3.402-8.218,3.41H149.681c-3.273-0.009-6.064-1.274-8.226-3.41c-2.136-2.162-3.393-4.945-3.402-8.218V405.29 c0-24.212,10.026-47.356,27.691-63.91l42.55-39.906c9.914-9.285,15.539-22.273,15.539-35.857v-19.234 c0-13.592-5.625-26.58-15.547-35.866l-42.542-39.896c-17.666-16.554-27.691-39.69-27.691-63.91V49.156 c0.009-3.273,1.266-6.055,3.402-8.226c2.162-2.127,4.953-3.394,8.226-3.402h212.636c3.273,0.008,6.056,1.274,8.218,3.402 c2.136,2.171,3.402,4.952,3.411,8.226v57.554c0,24.22-10.026,47.356-27.692,63.91l-42.55,39.896 c-9.914,9.286-15.538,22.274-15.538,35.866v19.234c0,13.584,5.625,26.572,15.547,35.874l42.541,39.88 c17.666,16.563,27.692,39.707,27.692,63.919V462.844z"></path> <path class="st0" d="M237.261,378.95l-77.33,77.33h192.128l-77.33-77.33C264.385,368.614,247.615,368.614,237.261,378.95z"></path> </g> </g></svg>
+                                }
+                            }
+
+                             @if(leave.IzinOnayDurumu=="Beklemede"){
+                            <div class="row">
+                                <div class="col-6"><form action="IzinRedAllPermissions" method="post">
+     <input type="hidden" name="id" value="@leave.Id">
+    <button type="submit" style="background: none; /* Buton arka planını kaldırır */
+    border: none; /* Buton kenarlığını kaldırır */
+    padding: 0; /* Varsayılan padding değerini sıfırlar */
+    cursor: pointer; /* İmleci bir el ikonuna dönüştürür */
+    display: inline-flex; /* SVG ikonunu merkezlemek için kullanılır */
+    align-items: center; 
+   
+    justify-content: center;"><svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M7.95206 16.048L16.0769 7.92297" stroke="#dc3545" stroke-width="2"></path><path d="M16.0914 16.0336L7.90884 7.85101" stroke="#dc3545" stroke-width="2"></path><path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="#dc3545" stroke-width="2"></path></g></svg></button>
+</form></div>
+                                <div class="col-6">
+                                    <form action="IzinOnayAllPermissions" method="post">
+     <input type="hidden" name="id" value="@leave.Id">
+     <button type="submit" style="background: none;
+    border: none;
+    padding: 0; 
+    cursor: pointer; 
+    display: inline-flex; 
+    align-items: center; 
+   
+    justify-content: center;"><svg width="31px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M16.5163 8.93451L11.0597 14.7023L8.0959 11.8984" stroke="#198754" stroke-width="2"></path><path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="#198754" stroke-width="2"></path></g></svg></button>
+</form>
+                                </div>
+                            </div>
+}
+
+
+
+
+
+                        </td>
+                    <td>
+                     <form action="DeleteAllPermissions" method="post">
+                        <input type="hidden" name="id" value="@leave.Id" />
+                      <button class="btn btn-danger">Sil</button>
+                     </form>
+                    </td>
+                    <td> <form action="UpdateAllPermissions" method="get">
+                        <input type="hidden" name="id" value="@leave.Id" />
+                      <button class="btn btn-success">Düzenle</button>
+                     </form></td>
+
+                    
+
+
+                </tr>
+     }
+        </tbody>
+            </table>
+   
+
+    }
+    <a asp-controller="User" asp-action="Permission" class="btn btn-primary">İzin Al</a>

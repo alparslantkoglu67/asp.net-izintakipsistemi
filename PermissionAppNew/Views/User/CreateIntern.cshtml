@@ -1,0 +1,70 @@
+@model Intern
+
+<h2 class="text-center">Create Intern</h2>
+
+<div class="container-fluid" style="width: 30%;">
+    <form asp-controller="User" asp-action="CreateIntern" method="post">
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="SurName"></label>
+            <input asp-for="SurName" class="form-control" />
+            <span asp-validation-for="SurName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Age"></label>
+            <input asp-for="Age" class="form-control" />
+            <span asp-validation-for="Age" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="NickName"></label>
+            <input asp-for="NickName" class="form-control" />
+            <span asp-validation-for="NickName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Position"></label>
+            <input asp-for="Position" class="form-control" />
+            <span asp-validation-for="Position" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Phone"></label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Okul"></label>
+            <input asp-for="Okul" class="form-control" />
+            <span asp-validation-for="Okul" class="text-danger"></span>
+        </div>
+        , <div class="form-group">
+            <label asp-for="stajBaslama"></label>
+            <input asp-for="stajBaslama" class="form-control" />
+            <span asp-validation-for="stajBaslama" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="stajBitis"></label>
+            <input asp-for="stajBitis" class="form-control" />
+            <span asp-validation-for="stajBitis" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Create</button>
+    </form>
+</div>

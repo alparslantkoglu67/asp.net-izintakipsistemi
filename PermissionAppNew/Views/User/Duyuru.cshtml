@@ -1,0 +1,133 @@
+@model List<Duyuru>
+
+@{
+    ViewData["Title"] = "Duyurular";
+    bool isAdmin = ViewBag.IsAdmin ?? false;
+}
+
+<h2>Duyurular</h2>
+
+@if (isAdmin)
+{
+    <a class="btn btn-primary mt-3" asp-action="DuyuruYap" asp-controller="User">Duyuru Yap</a>
+}
+
+
+
+
+
+
+@foreach (var duyuru in Model)
+{
+    <div class="container-fluid">
+        <div class="row ">
+            <div class="col-1" style="margin-left: 58.5%;margin-top: 1%;">
+                <div class="card text-center"
+                    style="border-radius: 15px;overflow: hidden;background-color: rgb(206, 207, 207);">
+                    <div class="card-header">
+                        <h6>İçerik</h6>
+                    </div>
+                </div>
+            </div>
+
+            @if (isAdmin)
+            {
+                <div class="col-1" style="margin-left: 14%;margin-top: 1%;">
+                    <form action="DuyuruUpdate" method="get">
+                        <div class="card text-center" style="border-radius: 15px;overflow: hidden;">
+                            <button class="btn btn-success" style="width: 90px;">
+                                <input type="hidden" name="id" value="@duyuru.Id" />
+
+                                <h6 style="margin-left: -5px;">Düzenle</h6>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-1" style="margin-top: 1%;margin-left: 1%;">
+                    <form action="DuyuruDelete" method="post">
+                        <div class="card text-center" style="border-radius: 15px;overflow: hidden;">
+                            <input type="hidden" name="id" value="@duyuru.Id" />
+                            <button class="btn btn-danger" asp-action="DuyuruDelete" asp-asp-controller="User">
+                                <h6>Sil</h6>
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            }
+
+
+        </div>
+    </div>
+
+
+    <div class="card mb-3 " style="margin-top: -1%;border:none;border-radius:35px">
+        <div class="card-body shadow p-4  "
+            style="border-radius: 20px;overflow:hidden;border:1px solid rgb(139, 139, 139);">
+            <div class=" container fluid">
+                <div class="row ">
+                    <div class="col-4  " style="display: flex;align-items: center;justify-content: center;">
+                        <div class="card" style="border:3px solid rgb(214, 214, 214);border-radius: 15px;">
+                            <div class="row p-2">
+                                <div class="row konu mb-4 " style="display: flex;
+                                        align-items: center;">
+                                    <div class="row">
+                                        <div class="col-4 text-center text-danger">
+                                            <h6>Konu:</h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <h6>@duyuru.Konu</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row yazar mb-4" style="display: flex;
+                                        align-items: center;">
+                                    <div class="row ">
+                                        <div class="col-4 text-center text-danger">
+                                            <h6>Yazar: </h6>
+                                        </div>
+                                        <div class="col-8">
+                                            <h6>@duyuru.Admins!.NickName</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row tarih" style="display: flex;
+                                        align-items: center;">
+                                    <div class="row">
+                                        <div class="col-4 text-center text-danger">
+                                            <h6>Tarih:</h6>
+                                        </div>
+                                        <div class="col-8 ">
+                                            <h6>@duyuru.DuyuruTarih.ToString("dd/MM/yyyy(dddd) ")</h6>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-8 text-center" style="display: flex;justify-content: center;">
+
+
+                        <div class="card  shadow p-3"
+                            style="width: 500px;margin-left: -9%;border:3px solid rgb(214, 214, 214);border-radius: 15px;">
+                            <div class=" card-body">
+                                <strong
+                                    style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;color: rgb(203, 28, 28);">@duyuru.Icerik</strong>
+
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}

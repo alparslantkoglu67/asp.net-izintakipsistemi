@@ -1,0 +1,107 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = PermissionAppNew
+build_property.RootNamespace = PermissionAppNew
+build_property.ProjectDir = C:\Users\Alparslan\Desktop\ASP.net\PermissionAppNew\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\Alparslan\Desktop\ASP.net\PermissionAppNew
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/AllPermissions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxBbGxQZXJtaXNzaW9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/CreateIntern.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxDcmVhdGVJbnRlcm4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/CreateUser.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxDcmVhdGVVc2VyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/Duyuru.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxEdXl1cnUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/DuyuruUpdate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxEdXl1cnVVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/DuyuruYap.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxEdXl1cnVZYXAuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/InternList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxJbnRlcm5MaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/MyPermissions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxNeVBlcm1pc3Npb25zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/Permission.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxQZXJtaXNzaW9uLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxQcm9maWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/UpdateAllPermissions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxVcGRhdGVBbGxQZXJtaXNzaW9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/UpdateInternList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxVcGRhdGVJbnRlcm5MaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/UpdatePermissions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxVcGRhdGVQZXJtaXNzaW9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/UpdateUserList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxVcGRhdGVVc2VyTGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/User/UserList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxVc2VyTGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alparslan/Desktop/ASP.net/PermissionAppNew/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-cntlnn8s7f

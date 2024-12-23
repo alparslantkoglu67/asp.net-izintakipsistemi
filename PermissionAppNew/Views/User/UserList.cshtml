@@ -1,0 +1,58 @@
+@model List<User>
+
+@{
+    ViewData["Title"] = "Kullanıcı Listesi";
+}
+
+<h2>Kullanıcı Listesi</h2>
+
+
+<table class="table table-hover text-center">
+    <thead>
+        <tr>
+            <th>Adı Soyadı</th>
+            <th>Kullanıcı Adı</th>
+            <th>Yaş</th>
+            <th>E-posta</th>
+            <th>Departman</th>
+            <th>Telefon</th>
+
+            <th></th>
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.AdSoyad</td>
+                <td>@user.NickName</td>
+                <td>@user.Age</td>
+                <td>@user.Email</td>
+                <td>@user.Position</td>
+                <td>@user.Phone</td>
+                <td>
+                    <form asp-action="UpdateUserList" asp-controller="User" method="get">
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <input type="hidden" name="Name" value="@user.Name" />
+                        <input type="hidden" name="SurName" value="@user.SurName" />
+                        <button class="btn btn-success" type="submit">Düzenle</button>
+                    </form>
+                </td>
+
+                <td>
+                    <form asp-action="DeleteUserList" asp-controller="User" method="post">
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <input type="hidden" name="Name" value="@user.Name" />
+                        <input type="hidden" name="SurName" value="@user.SurName" />
+                        <button class="btn btn-danger" type="submit" style="margin-left: -1.5rem;">Sil</button>
+                    </form>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="CreateUser">Yeni Kullanıcı Ekle</a>

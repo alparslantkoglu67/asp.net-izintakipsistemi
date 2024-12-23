@@ -1,0 +1,42 @@
+@model LoginViewModel
+<div class="d-flex justify-content-center align-items-center text-center mt-5">
+    <div class="container-fluid" style="width: 500px;">
+        <div class="bg-white p-4">
+            <h1>Login Sayfası</h1>
+            <form asp-action="Login" asp-controller="User" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+                <div class="mb-3 text-start">
+                    <label asp-for="UserName" class="form-label"></label>
+                    <input asp-for="UserName" class="form-control">
+                    <span asp-validation-for="UserName" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label asp-for="UserPassword" class="form-label"></label>
+                    <input asp-for="UserPassword" class="form-control">
+                    <span asp-validation-for="UserPassword" class="text-danger small"></span>
+
+                </div>
+
+
+                <button type="submit" class="btn btn-primary mb-3">Giriş Yap</button><br>
+
+
+            </form>
+            <p>Kaydın Yok mu?</p>
+            <div class="d-flex justify-content-center align-items-start text-start">
+                <div class="me-3">
+                    <p style="margin-top: 5px;">Çalışan için:</p>
+                </div>
+                <a type="submit" href="/User/CreateUser" class="btn btn-success">Kayıt Ol</a>
+            </div>
+            <div class="d-flex justify-content-center align-items-start text-start">
+                <div class="me-3">
+                    <p style="margin-top: 5px;">Stajyer için:</p>
+                </div>
+                <a type="submit" href="/User/CreateIntern" class="btn btn-success">Kayıt Ol</a>
+            </div>
+
+        </div>
+    </div>
+</div>

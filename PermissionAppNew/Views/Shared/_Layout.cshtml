@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ITS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PermissionAppNew.styles.css" asp-append-version="true" />
+
+    <style>
+        /* Hover rengini özelleştirme */
+        .table-hover tbody tr:hover {
+            background-color: #def5a0;
+            /* Burada renk kodunu değiştirebilirsiniz. */
+        }
+
+        /* Alternatif satırların renklerini özelleştir */
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #e9e9e9;
+            /* Açık gri renk */
+        }
+
+        .table-striped tbody tr:nth-child(even) {
+            background-color: #ffffff;
+            /* Daha koyu gri */
+        }
+
+        /* Hover sırasında renk değişimi */
+        .table-striped tbody tr:hover {
+            background-color: #def5a0;
+            /* Hafif yeşil ton */
+            transition: background-color 0.3s ease;
+            /* Renk geçişi için animasyon */
+        }
+    </style>
+
+</head>
+
+<body class="bg-light">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="User" asp-action="Login"
+                    style="margin-left: 5%;">Arvento İzin Takip Sistemi
+                    (ITS)</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1" style="display: flex;justify-content: start;">
+                        @if (User.Identity!.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User"
+                                    asp-action="UserList">Çalışanlar</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User"
+                                    asp-action="InternList">Stajyerler</a>
+                            </li>
+                        }
+
+
+                    </ul>
+                    @if (User.Identity!.IsAuthenticated)
+                    {
+                        <ul class="navbar-nav flex-grow-1" style="display: flex;justify-content: center;">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark " asp-area="" asp-controller="User" asp-action="Profile">
+                                    <svg class="me-1" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                            d="M16 9C16 11.2091 14.2091 13 12 13C9.79086 13 8 11.2091 8 9C8 6.79086 9.79086 5 12 5C14.2091 5 16 6.79086 16 9ZM14 9C14 10.1046 13.1046 11 12 11C10.8954 11 10 10.1046 10 9C10 7.89543 10.8954 7 12 7C13.1046 7 14 7.89543 14 9Z"
+                                            fill="currentColor" />
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                            d="M12 1C5.92487 1 1 5.92487 1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1ZM3 12C3 14.0902 3.71255 16.014 4.90798 17.5417C6.55245 15.3889 9.14627 14 12.0645 14C14.9448 14 17.5092 15.3531 19.1565 17.4583C20.313 15.9443 21 14.0524 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12ZM12 21C9.84977 21 7.87565 20.2459 6.32767 18.9878C7.59352 17.1812 9.69106 16 12.0645 16C14.4084 16 16.4833 17.1521 17.7538 18.9209C16.1939 20.2191 14.1881 21 12 21Z"
+                                            fill="currentColor" />
+                                    </svg>
+                                    @User.Identity!.Name</a>
+                            </li>
+                        </ul>
+                    }
+                    <ul class="navbar-nav flex-grow-1" style="display: flex;justify-content: end;margin-right: 6%;">
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark " asp-area="" asp-controller="User" asp-action="Duyuru"><svg
+                                        class="me-1" fill="#000000" height="24" width="24" version="1.1" id="Layer_1"
+                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        viewBox="0 0 300.005 300.005" xml:space="preserve">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <g>
+                                                <g>
+                                                    <path
+                                                        d="M150,0C67.159,0,0.002,67.162,0.002,150S67.159,300.005,150,300.005c82.843,0,150.003-67.165,150.003-150.005 S232.843,0,150,0z M135.499,177.77l-16.809-9.228h-10.019v-0.003l-10.105,35.525H72.181l10.105-35.525h-0.973 c-16.086,0-29.126-13.038-29.126-29.129c0-16.086,13.041-29.124,29.126-29.124h37.377l16.809-9.228V177.77z M168.163,195.695 l-17.102-9.386V93.602h-1.982l19.081-10.476c6.995,0,12.665,5.67,12.665,12.665v87.239h0.003 C180.828,190.025,175.158,195.695,168.163,195.695z M202.404,167.139c4.682-6.481,7.472-14.415,7.472-23 c0-8.585-2.791-16.519-7.472-23l9.057-9.057c6.935,8.847,11.077,19.974,11.077,32.057c0,12.083-4.145,23.21-11.077,32.057 L202.404,167.139z M227.581,192.315l-8.982-8.982c8.722-10.701,13.967-24.346,13.967-39.195s-5.242-28.494-13.967-39.195 l8.982-8.982c11.002,13.023,17.655,29.835,17.655,48.177S238.583,179.295,227.581,192.315z">
+                                                    </path>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </svg>Duyurular</a>
+                            </li>
+
+                            @if (User.Identity!.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+
+                                <li class="nav-item ">
+                                    <a class="nav-link text-dark " asp-area="" asp-controller="User"
+                                        asp-action="AllPermissions">Tüm
+                                        İzinler</a>
+                                </li>
+                            }
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark " asp-area="" asp-controller="User"
+                                    asp-action="Permission">İzin Al</a>
+                            </li>
+
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark " asp-area="" asp-controller="User"
+                                    asp-action="MyPermissions">İzinlerim</a>
+                            </li>
+
+
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark " asp-area="" asp-controller="User" asp-action="LogOut">Çıkış
+                                    Yap</a>
+                            </li>
+
+                        }
+                        else
+                        {
+
+
+                            <li class="nav-item " style="margin-left: 40%;">
+                                <a class="nav-link text-dark " asp-area="" asp-controller="User" asp-action="Login">Giriş
+                                    Yap
+                                </a>
+                            </li>
+                            <li class="nav-item subnav">
+                                <a class="nav-link text-dark " asp-area="" asp-controller="User"
+                                    asp-action="CreateIntern">Kayıt
+                                    Ol (Stajyer)
+                                </a>
+
+                            </li>
+                            <li class="nav-item subnav">
+                                <a class="nav-link text-dark " asp-area="" asp-controller="User"
+                                    asp-action="CreateUser">Kayıt
+                                    Ol (Çalışan)
+                                </a>
+
+                            </li>
+
+                        }
+
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

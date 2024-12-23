@@ -1,0 +1,30 @@
+@model LeaveDay
+@{
+    ViewData["Title"] = "İzin Al";
+}
+
+<h2 class="text-center">İzin Talep Et</h2>
+<div class="container-fluid" style="width: 30%;">
+
+    <form asp-action="Permission" asp-controller="User" method="post">
+
+        <div class="form-group">
+            <label for="StartDate">Başlangıç Tarihi</label>
+            <input type="date" class="form-control" id="StartDate" name="StartDate" required />
+            <label for="EndDate">Bitiş Tarihi</label>
+            <input type="date" class="form-control" id="EndDate" name="EndDate" required />
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="LeaveType">İzin Türü</label>
+            <select class="form-control" id="LeaveType" name="LeaveType" required>
+                <option value="Hastalık İzni">Hastalık İzni</option>
+                <option value="Ofisten Çalışma">Ofisten Çalışma</option>
+                <option value="Evden Çalışma">Evden Çalışma</option>
+            </select>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary ">İzin Talep Et</button>
+    </form>
+</div>
