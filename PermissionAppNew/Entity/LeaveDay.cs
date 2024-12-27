@@ -18,7 +18,7 @@ public class LeaveDay
 
     [Required(ErrorMessage = "İzin türü gereklidir.")]
     public string? LeaveType { get; set; }
-    public DateTime IzinAlimTarihi { get; set; }
+    public DateTime IzinAlimTarihi { get; set; } = DateTime.Now;
     public string IzinOnayDurumu { get; set; } = "Beklemede";
 
 

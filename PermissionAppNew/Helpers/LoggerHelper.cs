@@ -9,7 +9,7 @@ public static class LoggerHelper
             UserId = userId,
             Action = action,
             Description = description,
-            Timestamp = DateTime.UtcNow
+            Timestamp = DateTime.Now
         };
         context.Logs.Add(log);
         await context.SaveChangesAsync();

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PermissionAppNew.Data.Abstract;
 using PermissionAppNew.Models;
+using System.Diagnostics.Eventing.Reader;
 using System.Security.Claims;
 
 public class UserController : Controller
@@ -23,7 +24,7 @@ public class UserController : Controller
         _internRepository = internRepository;
         _adminRepository = adminRepository;
     }
-    public IActionResult Login()
+    public IActionResult Login()//OK
     {
         if (User.Identity!.IsAuthenticated)
         {
@@ -33,7 +34,7 @@ public class UserController : Controller
         return View();
     }
     [HttpPost]
-    public async Task<IActionResult> Login(LoginViewModel model)
+    public async Task<IActionResult> Login(LoginViewModel model)//OK
     {
         if (ModelState.IsValid)
         {
@@ -61,6 +62,32 @@ public class UserController : Controller
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
+                try
+                {
+                    try
+                    {
+                        await LoggerHelper.LogAsync(
+                            _context,
+                            userId: null,
+                            action: "Giriş Yap(Adminler)",
+                            description: $"{isAdmin.Id} ID'li, {isAdmin.NickName} kullanıcı adlı, {isAdmin.AdSoyad} isimli admin giriş yapmıştır.",
+                            internId: null,
+                            adminId: isAdmin.Id
+                        );
+                    }
+                    catch (Exception logEx)
+                    {
+                        ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                        return View(model);
+                    }
+
+
+                }
+
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Veritabanına kaydetme işlemi sırasında bir hata oluştu: {ex.Message}");
+                }
 
                 return RedirectToAction("Duyuru", "User");
             }
@@ -84,6 +111,34 @@ public class UserController : Controller
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
+
+                try
+                {
+                    try
+                    {
+                        await LoggerHelper.LogAsync(
+                            _context,
+                            userId: isUser.Id,
+                            action: "Giriş Yap(Çalışanlar)",
+                            description: $"{isUser.Id} ID'li, {isUser.NickName} kullanıcı adlı, {isUser.AdSoyad} isimli çalışan giriş yapmıştır.",
+                            internId: null,
+                            adminId: null
+                        );
+                    }
+                    catch (Exception logEx)
+                    {
+                        ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                        return View(model);
+                    }
+
+                    return RedirectToAction("Permission");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Veritabanına kaydetme işlemi sırasında bir hata oluştu: {ex.Message}");
+                }
+
+
 
                 return RedirectToAction("Duyuru", "User");
             }
@@ -109,40 +164,64 @@ public class UserController : Controller
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
+                try
+                {
+                    try
+                    {
+                        await LoggerHelper.LogAsync(
+                            _context,
+                            userId: null,
+                            action: "Giriş Yap(Stajyerler)",
+                            description: $"{isIntern.Id} ID'li, {isIntern.NickName} kullanıcı adlı, {isIntern.AdSoyad} isimli stajyer giriş yapmıştır.",
+                            internId: isIntern.Id,
+                            adminId: null
+                        );
+                    }
+                    catch (Exception logEx)
+                    {
+                        ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                        return View(model);
+                    }
+
+
+                }
+
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Veritabanına kaydetme işlemi sırasında bir hata oluştu: {ex.Message}");
+                }
 
                 return RedirectToAction("Duyuru", "User");
             }
 
-            else
-            {
-                ModelState.AddModelError("", "Kullanıcı adı veya şifre yanlış");
-            }
-            return View(model);
         }
-        return View(model);
 
-
+        return RedirectToAction(nameof(Login));
     }
 
-    public IActionResult CreateUser()
+    public IActionResult CreateUser()//OK
     {
         return View();
 
     }
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateUser(User model)
+    public async Task<IActionResult> CreateUser(User model)//OK
     {
+
         if (ModelState.IsValid)
         {
             try
             {
+                var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
+
                 int? oturumcuId = null;
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
                 if (userIdClaim != null)
                 {
                     var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
                     oturumcuId = int.Parse(userIdClaim);
                     _context.Users.Add(model);
                     await _context.SaveChangesAsync();
@@ -153,8 +232,8 @@ public class UserController : Controller
                         await LoggerHelper.LogAsync(
                             _context,
                             userId: null,
-                            action: "CreateUserByAdmin",
-                            description: model.NickName + " adlı kayıt " + role + " tarafından oluşturulmuştur. Çalışan ID'si: " + model.Id,
+                            action: "Çalışan Oluştur(Adminler)",
+                            description: $"{model.NickName}  adlı çalışan {NickName} tarafından oluşturulmuştur. (ID'si: {model.Id} KullanıcıAdı:{model.NickName} AdıSoyadı: {model.AdSoyad} Yaşı: {model.Age} Bölümü: {model.Position} Telefon: {model.Phone} Mail: {model.Email} Şifre: {model.Password} )",
                             internId: null,
                             adminId: oturumcuId
                         );
@@ -182,8 +261,8 @@ public class UserController : Controller
                         await LoggerHelper.LogAsync(
                             _context,
                             userId: model.Id,
-                            action: "CreateUser",
-                            description: model.NickName + " adlı kayıt " + model.NickName + " tarafından oluşturulmuştur. Çalışan ID'si: " + model.Id,
+                            action: "Çalışan Oluştur(noname)",
+                            description: $"{model.NickName}  adlı çalışan kendisi tarafından oluşturulmuştur. (ID'si: {model.Id} KullanıcıAdı: {model.NickName} AdıSoyadı: {model.AdSoyad} Yaşı: {model.Age} Bölümü: {model.Position} Telefon: {model.Phone} Mail: {model.Email} Şifre:  {model.Password} )",
                             internId: null,
                             adminId: null
                         );
@@ -211,8 +290,7 @@ public class UserController : Controller
         return View(model);
     }
 
-
-    public IActionResult CreateIntern()
+    public IActionResult CreateIntern()//OK
     {
 
         return View();
@@ -221,17 +299,20 @@ public class UserController : Controller
     }
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateIntern(Intern model)
+    public async Task<IActionResult> CreateIntern(Intern model)//OK
     {
         if (ModelState.IsValid)
         {
             try
             {
+                var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
                 int? oturumcuId = null;
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
                 if (userIdClaim != null)
                 {
+
+
                     var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                     oturumcuId = int.Parse(userIdClaim);
                     _context.Interns.Add(model);
@@ -243,8 +324,8 @@ public class UserController : Controller
                         await LoggerHelper.LogAsync(
                             _context,
                             userId: null,
-                            action: "CreateInternByAdmin",
-                            description: model.NickName + " adlı kayıt " + role + " tarafından oluşturulmuştur. Stajyer ID'si: " + model.Id,
+                            action: "Stajyer Oluştur(Adminler)",
+                            description: $"{model.NickName}  adlı stajyer {NickName} tarafından oluşturulmuştur. (ID'si: {model.Id} KullanıcıAdı: {model.NickName} AdıSoyadı:{model.AdSoyad} Yaşı: {model.Age} Bölümü: {model.Position} Telefon: {model.Phone} Mail: {model.Email} Şifre: {model.Password} Okul: {model.Okul} StajBaşlama: {model.stajBaslama} Staj Bitiş: {model.stajBitis})",
                             internId: null,
                             adminId: oturumcuId
                         );
@@ -272,8 +353,8 @@ public class UserController : Controller
                         await LoggerHelper.LogAsync(
                             _context,
                             userId: null,
-                            action: "CreateIntern",
-                            description: model.NickName + " adlı kayıt " + model.NickName + " tarafından oluşturulmuştur. Stajyer ID'si: " + model.Id,
+                            action: "Stajyer Oluştur(noname)",
+                            description: $"{model.NickName}  adlı stajyer kendisi tarafından oluşturulmuştur. (ID'si: {model.Id} KullanıcıAdı: {model.NickName} AdıSoyadı: {model.AdSoyad} Yaşı: {model.Age} Bölümü: {model.Position} Telefon: {model.Phone} Mail: {model.Email} Şifre: {model.Password} Okul: {model.Okul} StajBaşlama: {model.stajBaslama} Staj Bitiş: {model.stajBitis})",
                             internId: model.Id,
                             adminId: null
                         );
@@ -301,11 +382,7 @@ public class UserController : Controller
         return View(model);
     }
 
-
-
-
-
-    public async Task<IActionResult> UserList()
+    public async Task<IActionResult> UserList()//OK
     {
         var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         if (User.Identity!.IsAuthenticated == false)
@@ -320,7 +397,7 @@ public class UserController : Controller
     }
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteUserList(int id)
+    public async Task<IActionResult> DeleteUserList(int id)//OK
 
     {
         var user = await _context.Users
@@ -343,6 +420,7 @@ public class UserController : Controller
         {
             try
             {
+                var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
                 int? oturumcuId = null;
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -359,8 +437,8 @@ public class UserController : Controller
                         await LoggerHelper.LogAsync(
                             _context,
                             userId: null,
-                            action: "DeleteUserByAdmin",
-                            description: user.NickName + " adlı kayıt " + role + " tarafından silinmiştir. Çalışan ID'si: " + user.Id,
+                            action: "Çalışan Sil",
+                            description: $"{user.NickName}  adlı çalışan {NickName} tarafından silinmiştir. (ID'si: {user.Id} KullanıcıAdı:{user.NickName} AdıSoyadı:{user.AdSoyad} Yaşı:{user.Age} Bölümü:{user.Position} Telefon:{user.Phone} Mail:{user.Email} Şifre:{user.Password})",
                             internId: null,
                             adminId: oturumcuId
                         );
@@ -395,7 +473,7 @@ public class UserController : Controller
 
 
     [HttpGet]
-    public async Task<IActionResult> UpdateUserList(int? id)
+    public async Task<IActionResult> UpdateUserList(int? id)//OK
     {
         if (id == null)
         {
@@ -413,7 +491,7 @@ public class UserController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UpdateUserList(int id, User model)
+    public async Task<IActionResult> UpdateUserList(int id, User model)//OK
     {
         if (id != model.Id)
         {
@@ -424,9 +502,12 @@ public class UserController : Controller
         {
             int? oturumcuId = null;
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
+
 
             if (userIdClaim != null)
             {
+
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 oturumcuId = int.Parse(userIdClaim);
                 try
@@ -440,8 +521,8 @@ public class UserController : Controller
                         await LoggerHelper.LogAsync(
                             _context,
                             userId: null,
-                            action: "UpdateUserByAdmin",
-                            description: model.NickName + " adlı kayıt " + role + " tarafından düzenlenmiştir. Çalışan ID'si: " + model.Id,
+                            action: "Çalışan Güncelle",
+                            description: $"{model.NickName}  adlı çalışan {NickName} tarafından güncellenmiştir. (ID'si: {model.Id} KullanıcıAdı:{model.NickName} AdıSoyadı:{model.AdSoyad} Yaşı:{model.Age} Bölümü:{model.Position} Telefon:{model.Phone} Mail:{model.Email} Şifre:{model.Password})",
                             internId: null,
                             adminId: oturumcuId
                         );
@@ -472,7 +553,7 @@ public class UserController : Controller
         return View(model);
     }
 
-    public async Task<IActionResult> InternList()
+    public async Task<IActionResult> InternList()//OK
     {
         var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         if (User.Identity!.IsAuthenticated == false)
@@ -487,7 +568,7 @@ public class UserController : Controller
     }
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteInternList(int id)
+    public async Task<IActionResult> DeleteInternList(int id)//OK
     {
         var intern = await _context.Interns
             .Include(u => u.LeaveDays)
@@ -510,6 +591,8 @@ public class UserController : Controller
             try
             {
                 int? oturumcuId = null;
+                var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
+
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
                 if (userIdClaim != null)
@@ -525,8 +608,8 @@ public class UserController : Controller
                         await LoggerHelper.LogAsync(
                             _context,
                             userId: null,
-                            action: "DeleteInternByAdmin",
-                            description: intern.NickName + " adlı kayıt " + role + " tarafından silinmiştir. Stajyer ID'si: " + intern.Id,
+                            action: "Stajyer Sil",
+                            description: $"{intern.NickName}  adlı stajyer {NickName} tarafından güncellenmiştir. (ID'si: {intern.Id} KullanıcıAdı:{intern.NickName} AdıSoyadı:{intern.AdSoyad} Yaşı:{intern.Age} Bölümü:{intern.Position} Telefon:{intern.Phone} Mail:{intern.Email} Şifre:{intern.Password} Okul:{intern.Okul} StajBaşlama:{intern.stajBaslama} Staj Bitiş:{intern.stajBitis})",
                             internId: null,
                             adminId: oturumcuId
                         );
@@ -559,7 +642,7 @@ public class UserController : Controller
 
     }
     [HttpGet]
-    public async Task<IActionResult> UpdateInternList(int? id)
+    public async Task<IActionResult> UpdateInternList(int? id)//OK
     {
         if (id == null)
         {
@@ -577,7 +660,7 @@ public class UserController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UpdateInternList(int id, Intern model)
+    public async Task<IActionResult> UpdateInternList(int id, Intern model)//OK
     {
         if (id != model.Id)
         {
@@ -587,6 +670,7 @@ public class UserController : Controller
         if (ModelState.IsValid)
         {
             int? oturumcuId = null;
+            var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (userIdClaim != null)
@@ -604,8 +688,8 @@ public class UserController : Controller
                         await LoggerHelper.LogAsync(
                             _context,
                             userId: null,
-                            action: "UpdateInternByAdmin",
-                            description: model.NickName + " adlı kayıt " + role + " tarafından düzenlenmiştir. Stajyer ID'si: " + model.Id,
+                            action: "Stajyer Güncelle",
+                            description: $"{model.NickName}  adlı stajyer {NickName} tarafından güncellenmiştir. (ID'si: {model.Id} KullanıcıAdı:{model.NickName} AdıSoyadı:{model.AdSoyad} Yaşı:{model.Age} Bölümü:{model.Position} Telefon:{model.Phone} Mail:{model.Email} Şifre:{model.Password} Okul:{model.Okul} StajBaşlama:{model.stajBaslama} Staj Bitiş:{model.stajBitis})",
                             internId: null,
                             adminId: oturumcuId
                         );
@@ -639,16 +723,23 @@ public class UserController : Controller
 
 
     [HttpPost]
-    public async Task<IActionResult> Permission(LeaveDay model)
+    public async Task<IActionResult> Permission(LeaveDay model)//OK
     {
+        var oturumId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         var role = User.FindFirst(ClaimTypes.Role)?.Value;
         var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
 
 
         if (User.Identity != null && User.Identity.IsAuthenticated)
         {
+            if (oturumId == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
             if (ModelState.IsValid)
             {
+                int oturumid = int.Parse(oturumId);
                 model.IzinAlimTarihi = DateTime.Now;
                 if (role == "User")
                 {
@@ -670,8 +761,8 @@ public class UserController : Controller
                                 await LoggerHelper.LogAsync(
                                     _context,
                                     userId: userid,
-                                    action: "PermissionByUser",
-                                    description: $"{userid} ID'li {NickName}  adlı kullanıcı tarafından izin alınmıştır.(İzin alım: {model.StartDate} İzin Bitiş: {model.EndDate} İzin Türü: {model.LeaveType} İzin Onay Durumu: {model.IzinOnayDurumu} İzin Alım Tarihi: {model.IzinAlimTarihi} ) Çalışan ID'si: {model.UserId}",
+                                    action: "İzin Al(Çalışanlar)",
+                                    description: $"{userid} ID'li {NickName}  adlı kullanıcı tarafından izin alınmıştır.(İzin alım: {model.StartDate} İzin Bitiş: {model.EndDate} İzin Türü: {model.LeaveType} İzin Onay Durumu: {model.IzinOnayDurumu} İzin Alım Tarihi: {model.IzinAlimTarihi} ) Çalışan ID'si: {oturumid}",
                                     internId: null,
                                     adminId: null
                                 );
@@ -711,8 +802,8 @@ public class UserController : Controller
                                 await LoggerHelper.LogAsync(
                                     _context,
                                     userId: null,
-                                    action: "PermissionByIntern",
-                                    description: $"{internid} ID'li {NickName}  adlı stajyer tarafından izin alınmıştır.(İzin alım: {model.StartDate} İzin Bitiş: {model.EndDate} İzin Türü: {model.LeaveType} İzin Onay Durumu: {model.IzinOnayDurumu} İzin Alım Tarihi: {model.IzinAlimTarihi} ) Stajyer ID'si: {model.UserId}",
+                                    action: "İzin Al(Stajyerler)",
+                                    description: $"{internid} ID'li {NickName}  adlı stajyer tarafından izin alınmıştır.(İzin alım: {model.StartDate} İzin Bitiş: {model.EndDate} İzin Türü: {model.LeaveType} İzin Onay Durumu: {model.IzinOnayDurumu} İzin Alım Tarihi: {model.IzinAlimTarihi} ) Stajyer ID'si: {oturumid}",
                                     internId: internid,
                                     adminId: null
                                 );
@@ -751,8 +842,8 @@ public class UserController : Controller
                                 await LoggerHelper.LogAsync(
                                     _context,
                                     userId: null,
-                                    action: "PermissionByAdmin",
-                                    description: $"{adminid} ID'li {NickName}  adlı admin tarafından izin alınmıştır.(İzin alım: {model.StartDate} İzin Bitiş: {model.EndDate} İzin Türü: {model.LeaveType} İzin Onay Durumu: {model.IzinOnayDurumu} İzin Alım Tarihi: {model.IzinAlimTarihi} ) Admin ID'si: {model.UserId}",
+                                    action: "İzin Al(Adminler)",
+                                    description: $"{adminid} ID'li {NickName}  adlı admin tarafından izin alınmıştır.(İzin alım: {model.StartDate} İzin Bitiş: {model.EndDate} İzin Türü: {model.LeaveType} İzin Onay Durumu: {model.IzinOnayDurumu} İzin Alım Tarihi: {model.IzinAlimTarihi} ) Admin ID'si: {oturumid}",
                                     internId: null,
                                     adminId: adminid
                                 );
@@ -787,21 +878,94 @@ public class UserController : Controller
         return View(model);
     }
 
-    public IActionResult Permission()
+    public IActionResult Permission()//OK
     {
         var role = User.FindFirst(ClaimTypes.Role)?.Value;
-        if (role != null)
-            return View();
+        if (role == null)
+        {
+            return RedirectToAction("Login", "User");
+        }
 
         return View();
     }
-    public async Task<IActionResult> LogOut()
+    public async Task<IActionResult> LogOut()//OK
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        int? oturumid = null;
+        var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdClaim != null)
+        {
+
+            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value.ToString();
+            oturumid = int.Parse(userIdClaim);
+            if (role == "Admin")
+            {
+
+                try
+                {
+                    await LoggerHelper.LogAsync(
+                        _context,
+                        userId: null,
+                        action: "Çıkış Yap(Adminler)",
+                        description: $"{userIdClaim} ID'li, {NickName} kullanıcı adlı admin çıkış yapmıştır.",
+                        internId: null,
+                        adminId: oturumid
+                    );
+                }
+                catch (Exception logEx)
+                {
+                    ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+
+                }
+            }
+            if (role == "Intern")
+            {
+
+                try
+                {
+                    await LoggerHelper.LogAsync(
+                        _context,
+                        userId: null,
+                        action: "Çıkış Yap(Stajyerler)",
+                        description: $"{userIdClaim} ID'li, {NickName} kullanıcı adlı stajyer çıkış yapmıştır.",
+                        internId: oturumid,
+                        adminId: null
+                    );
+                }
+                catch (Exception logEx)
+                {
+                    ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+
+                }
+            }
+            if (role == "User")
+            {
+
+                try
+                {
+                    await LoggerHelper.LogAsync(
+                        _context,
+                        userId: oturumid,
+                        action: "Çıkış Yap(Çalışanlar)",
+                        description: $"{userIdClaim} ID'li, {NickName} kullanıcı adlı çalışan çıkış yapmıştır.",
+                        internId: null,
+                        adminId: null
+                    );
+                }
+                catch (Exception logEx)
+                {
+                    ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+
+                }
+            }
+        }
+
 
         return RedirectToAction("Login", "User");
     }
-    public async Task<IActionResult> Profile()
+    public async Task<IActionResult> Profile()//OK
 
     {
         var kullaniciId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -865,7 +1029,7 @@ public class UserController : Controller
         return View(profileViewModel);
 
     }
-    public async Task<IActionResult> MyPermissions()
+    public async Task<IActionResult> MyPermissions()//OK
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
@@ -903,9 +1067,10 @@ public class UserController : Controller
         return View(permissions);
     }
     [HttpPost]
-    public async Task<IActionResult> DeletePermissions(int id)
+    public async Task<IActionResult> DeletePermissions(int id)//OK
     {
         var oturumId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
 
         var role = User.FindFirst(ClaimTypes.Role)?.Value;
         var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
@@ -929,8 +1094,8 @@ public class UserController : Controller
                         await LoggerHelper.LogAsync(
                             _context,
                             userId: null,
-                            action: "DeletePermissionByIntern",
-                            description: $"{oturumid} ID'li {NickName} kullanıcı adlı stajyer, {leaveday.Id} ID'li kaydı başarıyla silmiştir.(Başlangıç Tarihi:{leaveday.StartDate} Bitiş Tarihi: {leaveday.EndDate} İzin Türü:{leaveday.LeaveType} İzin Alım Tarihi {leaveday.IzinAlimTarihi} İzin Onay Durumu: {leaveday.IzinOnayDurumu})",
+                            action: "İzin Sil(Stajyerler)",
+                            description: $"{oturumid} ID'li {NickName} kullanıcı adlı stajyer, {leaveday.Id} ID'li izin kaydını başarıyla silmiştir.(Başlangıç Tarihi:{leaveday.StartDate} Bitiş Tarihi: {leaveday.EndDate} İzin Türü:{leaveday.LeaveType} İzin Alım Tarihi {leaveday.IzinAlimTarihi} İzin Onay Durumu: {leaveday.IzinOnayDurumu})",
                             internId: oturumid,
                             adminId: null
                         );
@@ -962,8 +1127,8 @@ public class UserController : Controller
                         await LoggerHelper.LogAsync(
                             _context,
                             userId: null,
-                            action: "DeletePermissionByAdmin",
-                            description: $"{oturumid} ID'li {NickName} kullanıcı adlı admin, {leaveday.Id} ID'li kaydı başarıyla silmiştir.(Başlangıç Tarihi:{leaveday.StartDate} Bitiş Tarihi: {leaveday.EndDate} İzin Türü:{leaveday.LeaveType} İzin Alım Tarihi {leaveday.IzinAlimTarihi} İzin Onay Durumu: {leaveday.IzinOnayDurumu})",
+                            action: "İzin Sil(Adminler)",
+                            description: $"{oturumid} ID'li {NickName} kullanıcı adlı admin, {leaveday.Id} ID'li izin kaydını başarıyla silmiştir.(Başlangıç Tarihi:{leaveday.StartDate} Bitiş Tarihi: {leaveday.EndDate} İzin Türü:{leaveday.LeaveType} İzin Alım Tarihi {leaveday.IzinAlimTarihi} İzin Onay Durumu: {leaveday.IzinOnayDurumu})",
                             internId: null,
                             adminId: oturumid
                         );
@@ -995,8 +1160,8 @@ public class UserController : Controller
                         await LoggerHelper.LogAsync(
                             _context,
                             userId: oturumid,
-                            action: "DeletePermissionByUser",
-                            description: $"{oturumid} ID'li {NickName} kullanıcı adlı çalışan, {leaveday.Id} ID'li kaydı başarıyla silmiştir.(Başlangıç Tarihi:{leaveday.StartDate} Bitiş Tarihi: {leaveday.EndDate} İzin Türü:{leaveday.LeaveType} İzin Alım Tarihi {leaveday.IzinAlimTarihi} İzin Onay Durumu: {leaveday.IzinOnayDurumu})",
+                            action: "İzin Sil(Çalışanlar)",
+                            description: $"{oturumid} ID'li {NickName} kullanıcı adlı çalışan, {leaveday.Id} ID'li izin kaydını başarıyla silmiştir.(Başlangıç Tarihi:{leaveday.StartDate} Bitiş Tarihi: {leaveday.EndDate} İzin Türü:{leaveday.LeaveType} İzin Alım Tarihi {leaveday.IzinAlimTarihi} İzin Onay Durumu: {leaveday.IzinOnayDurumu})",
                             internId: null,
                             adminId: null
                         );
@@ -1016,7 +1181,7 @@ public class UserController : Controller
     }
     [HttpGet]
 
-    public async Task<IActionResult> UpdatePermissions(int? id)
+    public async Task<IActionResult> UpdatePermissions(int? id)//OK
     {
         if (id == null)
         {
@@ -1032,7 +1197,7 @@ public class UserController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UpdatePermissions(int id, LeaveDay model)
+    public async Task<IActionResult> UpdatePermissions(int id, LeaveDay model)//EN SON BURAYA KADAR LOG KAYDI YAPILDI***********************
     {
         var oturumId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -1042,14 +1207,114 @@ public class UserController : Controller
         {
             return NotFound();
         }
+        if (oturumId == null)
+        {
+            return RedirectToAction(nameof(Login));
+        }
 
         if (ModelState.IsValid)
         {
             try
             {
-                model.IzinAlimTarihi = DateTime.Now;
+
                 _context.Update(model);
                 await _context.SaveChangesAsync();
+                if (role == "Admin")
+                {
+                    int oturumid = int.Parse(oturumId);
+
+                    if (model == null)
+                    {
+                        NotFound();
+                    }
+                    else
+                    {
+
+                        try
+                        {
+                            await LoggerHelper.LogAsync(
+                                _context,
+                                userId: null,
+                                action: "İzin Güncelle(Adminler)",
+                                description: $"{oturumid} ID'li {NickName} kullanıcı adlı admin, {model.Id} ID'li izin kaydını başarıyla güncellemiştir.(Başlangıç Tarihi:{model.StartDate} Bitiş Tarihi: {model.EndDate} İzin Türü:{model.LeaveType} İzin Alım Tarihi {model.IzinAlimTarihi} İzin Onay Durumu: {model.IzinOnayDurumu})",
+                                internId: null,
+                                adminId: oturumid
+                            );
+                        }
+                        catch (Exception logEx)
+                        {
+                            ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                            return View();
+                        }
+                    }
+
+
+                    return RedirectToAction("MyPermissions", "User");
+                }
+                if (role == "User")
+                {
+                    int oturumid = int.Parse(oturumId);
+
+                    if (model == null)
+                    {
+                        NotFound();
+                    }
+                    else
+                    {
+
+                        try
+                        {
+                            await LoggerHelper.LogAsync(
+                                _context,
+                                userId: oturumid,
+                                action: "İzin Güncelle(Çalışanlar)",
+                                description: $"{oturumid} ID'li {NickName} kullanıcı adlı çalışan, {model.Id} ID'li izin kaydını başarıyla güncellemiştir.(Başlangıç Tarihi:{model.StartDate} Bitiş Tarihi: {model.EndDate} İzin Türü:{model.LeaveType} İzin Alım Tarihi {model.IzinAlimTarihi} İzin Onay Durumu: {model.IzinOnayDurumu})",
+                                internId: null,
+                                adminId: null
+                            );
+                        }
+                        catch (Exception logEx)
+                        {
+                            ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                            return View();
+                        }
+                    }
+
+
+                    return RedirectToAction("MyPermissions", "User");
+                }
+                if (role == "Intern")
+                {
+                    int oturumid = int.Parse(oturumId);
+
+                    if (model == null)
+                    {
+                        NotFound();
+                    }
+                    else
+                    {
+
+                        try
+                        {
+                            await LoggerHelper.LogAsync(
+                                _context,
+                                userId: null,
+                                action: "İzin Güncelle(Stajyerler)",
+                                description: $"{oturumid} ID'li {NickName} kullanıcı adlı stajyer, {model.Id} ID'li izin kaydını başarıyla güncellemiştir.(Başlangıç Tarihi:{model.StartDate} Bitiş Tarihi: {model.EndDate} İzin Türü:{model.LeaveType} İzin Alım Tarihi {model.IzinAlimTarihi} İzin Onay Durumu: {model.IzinOnayDurumu})",
+                                internId: oturumid,
+                                adminId: null
+                            );
+                        }
+                        catch (Exception logEx)
+                        {
+                            ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                            return View();
+                        }
+                    }
+
+
+                    return RedirectToAction("MyPermissions", "User");
+                }
                 return RedirectToAction("MyPermissions", "User");
             }
             catch (DbUpdateConcurrencyException)
@@ -1070,7 +1335,14 @@ public class UserController : Controller
 
     public async Task<IActionResult> AllPermissions()
     {
-
+        var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        if (User.Identity!.IsAuthenticated == false)
+        {
+            if (role != "Admin")
+            {
+                return RedirectToAction("Login", "User");
+            }
+        }
 
 
         var permissions = await _context.LeaveDays
@@ -1084,7 +1356,7 @@ public class UserController : Controller
         return View(permissions);
     }
     [HttpPost]
-    public async Task<IActionResult> IzinOnayAllPermissions(int id, LeaveDay model)
+    public async Task<IActionResult> OnayIzin(int id)
 
     {
         var permission = await _context.LeaveDays.FirstOrDefaultAsync(x => x.Id == id);
@@ -1092,25 +1364,76 @@ public class UserController : Controller
         {
             return NotFound();
         }
+        int? oturumid = null;
+        var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        permission.IzinOnayDurumu = "Onaylandı";
-        _context.LeaveDays.Update(permission);
-        await _context.SaveChangesAsync();
+        if (userIdClaim != null)
+        {
+            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            oturumid = int.Parse(userIdClaim);
+
+            permission.IzinOnayDurumu = "Onaylandı";
+            _context.LeaveDays.Update(permission);
+            await _context.SaveChangesAsync();
+            try
+            {
+                await LoggerHelper.LogAsync(
+                    _context,
+                    userId: null,
+                    action: "İzin Onay",
+                    description: $"{permission.Id} ID'li izin kaydı {NickName} tarafından başarıyla onaylanmıştır.(İzin alım: {permission.StartDate} İzin Bitiş: {permission.EndDate} İzin Türü: {permission.LeaveType} İzin Onay Durumu: {permission.IzinOnayDurumu} İzin Alım Tarihi: {permission.IzinAlimTarihi} )",
+                    internId: null,
+                    adminId: oturumid
+                );
+            }
+            catch (Exception logEx)
+            {
+                ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                return View(permission);
+            }
+        }
 
         return RedirectToAction("AllPermissions", "User");
     }
     [HttpPost]
-    public async Task<IActionResult> IzinRedAllPermissions(int id)
+    public async Task<IActionResult> RedIzin(int id)
     {
-        var permission = await _context.LeaveDays.FirstOrDefaultAsync(x => x.Id == id);
+        var permission = await _context.LeaveDays.FirstOrDefaultAsync(x => x.Id == id)
+        ;
         if (permission == null)
         {
             return NotFound();
         }
+        int? oturumid = null;
+        var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        permission.IzinOnayDurumu = "Reddedildi";
-        _context.LeaveDays.Update(permission);
-        await _context.SaveChangesAsync();
+        if (userIdClaim != null)
+        {
+            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            oturumid = int.Parse(userIdClaim);
+
+            permission.IzinOnayDurumu = "Reddedildi";
+            _context.LeaveDays.Update(permission);
+            await _context.SaveChangesAsync();
+            try
+            {
+                await LoggerHelper.LogAsync(
+                    _context,
+                    userId: null,
+                    action: "İzin Red",
+                    description: $"{permission.Id} ID'li izin kaydı {NickName} tarafından başarıyla reddedilmiştir.(İzin alım: {permission.StartDate} İzin Bitiş: {permission.EndDate} İzin Türü: {permission.LeaveType} İzin Onay Durumu: {permission.IzinOnayDurumu} İzin Alım Tarihi: {permission.IzinAlimTarihi} )",
+                    internId: null,
+                    adminId: oturumid
+                );
+            }
+            catch (Exception logEx)
+            {
+                ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                return View(permission);
+            }
+        }
 
         return RedirectToAction("AllPermissions", "User");
     }
@@ -1120,13 +1443,117 @@ public class UserController : Controller
 
     {
 
-        var permission = await _context.LeaveDays.FirstOrDefaultAsync(x => x.Id == id);
+
+        var permission = await _context.LeaveDays
+                                   .Include(l => l.Users)
+                                   .Include(l => l.Interns)
+                                   .Include(l => l.Admins)
+                                   .FirstOrDefaultAsync(x => x.Id == id);
         if (permission == null)
         {
-            NotFound();
+            return NotFound();
         }
-        _context.LeaveDays.Remove(permission!);
-        await _context.SaveChangesAsync();
+
+        int? oturumid = null;
+        var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+
+
+        if (permission.Admins != null)
+        {
+            if (userIdClaim != null)
+            {
+
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                oturumid = int.Parse(userIdClaim);
+
+
+                _context.LeaveDays.Remove(permission);
+                await _context.SaveChangesAsync();
+                try
+                {
+                    await LoggerHelper.LogAsync(
+                        _context,
+                        userId: null,
+                        action: "Tüm İzinler İzin Sil(Admin)",
+                        description: $"{permission.Id} ID'li izin kaydı {NickName} tarafından başarıyla silinmiştir.(İzin alım: {permission.StartDate} İzin Bitiş: {permission.EndDate} İzin Türü: {permission.LeaveType} İzin Onay Durumu: {permission.IzinOnayDurumu} İzin Alım Tarihi: {permission.IzinAlimTarihi} //İzni silinen; Id: {permission.Admins.Id} Adı: {permission.Admins.AdSoyad} E-mail: {permission.Admins.Email}Şifre: {permission.Admins.Password} )",
+                        internId: null,
+                        adminId: oturumid
+                    );
+                }
+                catch (Exception logEx)
+                {
+                    ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                    return View(permission);
+                }
+            }
+        }
+
+        else if (permission.Interns != null)
+        {
+            if (userIdClaim != null)
+            {
+
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                oturumid = int.Parse(userIdClaim);
+
+
+                _context.LeaveDays.Remove(permission);
+                await _context.SaveChangesAsync();
+                try
+                {
+                    await LoggerHelper.LogAsync(
+                        _context,
+                        userId: null,
+                        action: "Tüm İzinler İzin Sil(Stajyer)",
+                        description: $"{permission.Id} ID'li izin kaydı {NickName} tarafından başarıyla silinmiştir.(İzin alım: {permission.StartDate} İzin Bitiş: {permission.EndDate} İzin Türü: {permission.LeaveType} İzin Onay Durumu: {permission.IzinOnayDurumu} İzin Alım Tarihi: {permission.IzinAlimTarihi} İzni silinen; Id: {permission.Interns.Id} Adı: {permission.Interns.AdSoyad} E-mail: {permission.Interns.Email} Telefon: {permission.Interns.Phone})",
+                        internId: null,
+                        adminId: oturumid
+                    );
+                }
+                catch (Exception logEx)
+                {
+                    ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                    return View(permission);
+                }
+            }
+        }
+        else if (permission.Users != null)
+        {
+            if (userIdClaim != null)
+            {
+
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                oturumid = int.Parse(userIdClaim);
+
+
+                _context.LeaveDays.Remove(permission);
+                await _context.SaveChangesAsync();
+                try
+                {
+                    await LoggerHelper.LogAsync(
+                        _context,
+                        userId: null,
+                        action: "Tüm İzinler İzin Sil(Çalışan)",
+                        description: $"{permission.Id} ID'li izin kaydı {NickName} tarafından başarıyla silinmiştir.(İzin alım: {permission.StartDate} İzin Bitiş: {permission.EndDate} İzin Türü: {permission.LeaveType} İzin Onay Durumu: {permission.IzinOnayDurumu} İzin Alım Tarihi: {permission.IzinAlimTarihi} İzni silinen; Id: {permission.Users.Id} Adı: {permission.Users.AdSoyad} E-mail: {permission.Users.Email} Telefon: {permission.Users.Phone})",
+                        internId: null,
+                        adminId: oturumid
+                    );
+                }
+                catch (Exception logEx)
+                {
+                    ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                    return View(permission);
+                }
+            }
+        }
+        else
+        {
+            return NotFound();
+        }
+
+
         return RedirectToAction("AllPermissions", "User");
     }
     [HttpPost]
@@ -1145,7 +1572,93 @@ public class UserController : Controller
 
                 _context.Update(model);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("AllPermissions", "User");
+                int? oturumid = null;
+                var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+
+
+                if (model.Admins != null)
+                {
+                    if (userIdClaim != null)
+                    {
+
+                        var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                        oturumid = int.Parse(userIdClaim);
+
+                        try
+                        {
+                            await LoggerHelper.LogAsync(
+                                _context,
+                                userId: null,
+                                action: "Tüm İzinler İzin Güncelle(Adminler)",
+                                description: $"{model.Id} ID'li izin kaydı {NickName} tarafından başarıyla güncellenmiştir.(İzin alım: {model.StartDate} İzin Bitiş: {model.EndDate} İzin Türü: {model.LeaveType} İzin Onay Durumu: {model.IzinOnayDurumu} İzin Alım Tarihi: {model.IzinAlimTarihi}İzin güncellenen kullanıcının ; Adı: {model.Admins.AdSoyad} Kullanıcı Adı: {model.Admins.NickName} Mail: {model.Admins.Email} )",
+                                internId: null,
+                                adminId: oturumid
+                            );
+                        }
+                        catch (Exception logEx)
+                        {
+                            ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                            return View(model);
+                        }
+                    }
+                    return RedirectToAction("AllPermissions", "User");
+                }
+                if (model.Users != null)
+                {
+                    if (userIdClaim != null)
+                    {
+
+                        var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                        oturumid = int.Parse(userIdClaim);
+
+                        try
+                        {
+                            await LoggerHelper.LogAsync(
+                                _context,
+                                userId: null,
+                                action: "Tüm İzinler İzin Güncelle(Çalışanlar)",
+                                description: $"{model.Id} ID'li izin kaydı {NickName} tarafından başarıyla güncellenmiştir.(İzin alım: {model.StartDate} İzin Bitiş: {model.EndDate} İzin Türü: {model.LeaveType} İzin Onay Durumu: {model.IzinOnayDurumu} İzin Alım Tarihi: {model.IzinAlimTarihi}İzin güncellenen kullanıcının ; Adı: {model.Users.AdSoyad} Kullanıcı Adı: {model.Users.NickName} Mail: {model.Users.Email} Bölüm : {model.Users.Position} Telefon: {model.Users.Phone})",
+                                internId: null,
+                                adminId: oturumid
+                            );
+                        }
+                        catch (Exception logEx)
+                        {
+                            ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                            return View(model);
+                        }
+                    }
+                    return RedirectToAction("AllPermissions", "User");
+                }
+                if (model.Interns != null)
+                {
+                    if (userIdClaim != null)
+                    {
+
+                        var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                        oturumid = int.Parse(userIdClaim);
+
+                        try
+                        {
+                            await LoggerHelper.LogAsync(
+                                _context,
+                                userId: null,
+                                action: "Tüm İzinler İzin Güncelle(Stajyerler)",
+                                description: $"{model.Id} ID'li izin kaydı {NickName} tarafından başarıyla güncellenmiştir.(İzin alım: {model.StartDate} İzin Bitiş: {model.EndDate} İzin Türü: {model.LeaveType} İzin Onay Durumu: {model.IzinOnayDurumu} İzin Alım Tarihi: {model.IzinAlimTarihi}İzin güncellenen kullanıcının ; Adı: {model.Interns.AdSoyad} Kullanıcı Adı: {model.Interns.NickName} Mail: {model.Interns.Email} Bölüm : {model.Interns.Position} Telefon: {model.Interns.Phone} Okul: {model.Interns.Okul})",
+                                internId: null,
+                                adminId: oturumid
+                            );
+                        }
+                        catch (Exception logEx)
+                        {
+                            ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                            return View(model);
+                        }
+                    }
+                    return RedirectToAction("AllPermissions", "User");
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -1198,6 +1711,38 @@ public class UserController : Controller
             model.DuyuruTarih = DateTime.Now;
             _context.Duyurus.Add(model);
             await _context.SaveChangesAsync();
+            int? oturumid = null;
+            var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+
+
+
+            if (userIdClaim != null)
+            {
+
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                oturumid = int.Parse(userIdClaim);
+
+                try
+                {
+                    await LoggerHelper.LogAsync(
+                        _context,
+                        userId: null,
+                        action: "Duyuru Yap",
+                        description: $"{model.Id} ID'li duyuru  {NickName} tarafından başarıyla yapılmıştır.(Duyuru Konu: {model.Konu} Duyuru İçerik: {model.Icerik} Duyuru Tarihi: {model.DuyuruTarih} Duyuru Yapan Admin Id: {model.AdminId} )",
+                        internId: null,
+                        adminId: oturumid
+                    );
+                }
+                catch (Exception logEx)
+                {
+                    ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                    return View(model);
+                }
+            }
+
+
             return RedirectToAction(nameof(Duyuru));
         }
 
@@ -1250,10 +1795,41 @@ public class UserController : Controller
         var duyuru = await _context.Duyurus.FirstOrDefaultAsync(x => x.Id == id);
         if (duyuru == null)
         {
-            NotFound();
+            return NotFound();
         }
         _context.Duyurus.Remove(duyuru!);
         await _context.SaveChangesAsync();
+        int? oturumid = null;
+        var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+
+
+
+        if (userIdClaim != null)
+        {
+
+            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            oturumid = int.Parse(userIdClaim);
+
+            try
+            {
+                await LoggerHelper.LogAsync(
+                    _context,
+                    userId: null,
+                    action: "Duyuru Sil",
+                    description: $"{duyuru.Id} ID'li duyuru  {NickName} tarafından başarıyla silinmiştir.(Duyuru Konu: {duyuru.Konu} Duyuru İçerik: {duyuru.Icerik} Duyuru Tarihi: {duyuru.DuyuruTarih} Duyuru Yapan Admin Id: {duyuru.AdminId} )",
+                    internId: null,
+                    adminId: oturumid
+                );
+            }
+            catch (Exception logEx)
+            {
+                ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                return View(duyuru);
+            }
+        }
+
         return RedirectToAction("Duyuru", "User");
     }
 
@@ -1273,6 +1849,36 @@ public class UserController : Controller
                 model.DuyuruTarih = DateTime.Now;
                 _context.Update(model);
                 await _context.SaveChangesAsync();
+                int? oturumid = null;
+                var NickName = User.FindFirst(ClaimTypes.Name)?.Value;
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+
+
+
+                if (userIdClaim != null)
+                {
+
+                    var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    oturumid = int.Parse(userIdClaim);
+
+                    try
+                    {
+                        await LoggerHelper.LogAsync(
+                            _context,
+                            userId: null,
+                            action: "Duyuru Düzenle",
+                            description: $"{model.Id} ID'li duyuru  {NickName} tarafından başarıyla düzenlenmiştir.(Duyuru Konu: {model.Konu} Duyuru İçerik: {model.Icerik} Duyuru Tarihi: {model.DuyuruTarih} Duyuru Yapan Admin Id: {model.AdminId} )",
+                            internId: null,
+                            adminId: oturumid
+                        );
+                    }
+                    catch (Exception logEx)
+                    {
+                        ModelState.AddModelError("", $"Loglama sırasında bir hata oluştu: {logEx.Message}");
+                        return View(model);
+                    }
+                }
                 return RedirectToAction("Duyuru", "User");
             }
             catch (DbUpdateConcurrencyException)
