@@ -1916,7 +1916,7 @@ public class UserController : Controller
 
 }
 
-
+//ALPARSLAN TÜRKOĞLU 16-09-2024  // 29-12-2024 STAJYER
 
 
 
